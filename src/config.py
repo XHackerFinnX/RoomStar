@@ -10,18 +10,18 @@ class Settings(BaseSettings):
     POSTGRESQL_DATABASE: SecretStr
     
     # Локальный запуск
-    WEBAPP_URL: str = "https://roomstar.serveo.net"
-    WEBHOOK_URL: str = "https://roomstar.serveo.net"
-    WEBHOOK_PATH: str = "/webhook"
-    APP_HOST: str = "localhost"
-    APP_PORT: int = 8000
+    # WEBAPP_URL: str = "https://roomstar.serveo.net"
+    # WEBHOOK_URL: str = "https://roomstar.serveo.net"
+    # WEBHOOK_PATH: str = "/webhook"
+    # APP_HOST: str = "localhost"
+    # APP_PORT: int = 8000
     
     # Продакшен
-    # WEBAPP_URL: str = "https://racerandom.ru"
-    # WEBHOOK_URL: str = "https://xhackerfinnx-randombot-b4ef.twc1.net"
-    # WEBHOOK_PATH: str = "/webhook"
-    # APP_HOST: str = "0.0.0.0"
-    # APP_PORT: int = 8000
+    WEBAPP_URL: str = "https://roomstars.ru"
+    WEBHOOK_URL: str = "https://xhackerfinnx-roomstar-1bf7.twc1.net"
+    WEBHOOK_PATH: str = "/webhook"
+    APP_HOST: str = "0.0.0.0"
+    APP_PORT: int = 8000
     
     model_config: SettingsConfigDict = SettingsConfigDict(
         env_file='.env',
