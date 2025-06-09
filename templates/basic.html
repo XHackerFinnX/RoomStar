@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Room Stars - Главная</title>
+        <link rel="stylesheet" href="/static/css/basic.css">
+        <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    </head>
+    <body>
+        <!-- Хедер -->
+        <header class="header">
+            <!-- Профиль -->
+            <div class="profile">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <h3>Имя</h3>
+                </div>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <h1 class="logo">🎰 ROOM STARS</h1>
+            <p class="subtitle">Добро пожаловать!</p>
+
+            <div class="game-buttons">
+                <button class="game-btn exchange-btn" onclick="goToShop()">
+                    💱 Биржа звезд
+                </button>
+                <button class="game-btn wheel-btn" onclick="openGame()">
+                    🎡 Колесо Удачи
+                </button>
+            </div>
+        </main>
+
+        <!-- Модальное окно игры -->
+        <div id="gameModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeGameModal()">&times;</span>
+                <h2 id="gameTitle">🎮 Игра</h2>
+                <p id="gameDescription">Игра находится в разработке...</p>
+                <button class="game-btn star-btn" onclick="closeGameModal()">
+                    Закрыть
+                </button>
+            </div>
+        </div>
+
+        <script src="/static/js/user.js" defer></script>
+        <script src="/static/js/basic.js" defer></script>
+    </body>
+</html>

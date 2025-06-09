@@ -1,0 +1,755 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap");
+
+/* делаем везде так, чтобы свойства width и height задавали не размеры контента, а размеры блока */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+button,
+a,
+input,
+textarea,
+select,
+span,
+div {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  outline: none;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
+/* общие настройки страницы */
+body {
+  background: #1e1e1e;
+  min-height: 100vh;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* Анимированный фон */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 20% 80%, rgba(242, 183, 97, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(242, 183, 97, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(242, 183, 97, 0.03) 0%, transparent 50%);
+  z-index: -1;
+  animation: backgroundShift 10s ease-in-out infinite alternate;
+}
+
+@keyframes backgroundShift {
+  0% {
+    transform: translateX(0px) translateY(0px);
+  }
+  100% {
+    transform: translateX(10px) translateY(10px);
+  }
+}
+
+/* Декоративные элементы */
+.floating-chips {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.chip {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(45deg, #f2b761, #f7d08a);
+  border-radius: 50%;
+  opacity: 0.1;
+  animation: float 6s ease-in-out infinite;
+}
+
+.chip:nth-child(1) {
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+.chip:nth-child(2) {
+  top: 20%;
+  right: 10%;
+  animation-delay: 1s;
+}
+.chip:nth-child(3) {
+  bottom: 20%;
+  left: 20%;
+  animation-delay: 2s;
+}
+.chip:nth-child(4) {
+  bottom: 10%;
+  right: 20%;
+  animation-delay: 3s;
+}
+.chip:nth-child(5) {
+  top: 50%;
+  left: 80%;
+  animation-delay: 4s;
+}
+.chip:nth-child(6) {
+  top: 70%;
+  left: 5%;
+  animation-delay: 5s;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+}
+
+/* Хедер */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  background: rgba(30, 30, 30, 0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(242, 183, 97, 0.2);
+}
+
+.header-buttons {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.cart-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  color: #1e1e1e;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(45deg, #f2b761, #f7d08a);
+  box-shadow: 0 4px 15px rgba(242, 183, 97, 0.3);
+  position: relative;
+}
+
+.cart-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(242, 183, 97, 0.4);
+}
+
+.colored-arrow {
+  display: inline-block; /* Фильтры лучше работают с блочными элементами */
+  filter: brightness(0.9) /* Полная темнота (почти чёрный) */ grayscale(1) /* Убирает цветность */ contrast(1.5); /* Увеличивает чёткость (опционально) */
+}
+
+.nav-btn {
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(45deg, #f2b761, #f7d08a);
+  color: #1e1e1e;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(242, 183, 97, 0.3);
+}
+
+.balance-display {
+  display: flex;
+  align-items: center;
+}
+
+.balance-info {
+  background: rgba(242, 183, 97, 0.1);
+  padding: 10px 20px;
+  border-radius: 15px;
+  border: 1px solid rgba(242, 183, 97, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.balance-label {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.balance-amount {
+  color: #f2b761;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.balance-icon {
+  font-size: 15px;
+  padding-bottom: 2px;
+}
+
+/* Основной контент */
+.wheel-content {
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: calc(100vh - 90px);
+}
+
+.page-title {
+  font-size: 48px;
+  font-weight: bold;
+  background: linear-gradient(45deg, #f2b761, #f7d08a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+  text-align: center;
+  text-shadow: 0 0 30px rgba(242, 183, 97, 0.5);
+}
+
+.page-subtitle {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+/* общий блок для всех элементов колеса */
+.deal-wheel {
+  /* задаём переменные блока */
+  /* размеры колеса */
+  --size: clamp(250px, 80vmin, 500px);
+  /* настройки яркости и заливки фона секторов */
+  --lg-hs: 0 3%;
+  --lg-stop: 50%;
+  --lg: linear-gradient(hsl(var(--lg-hs) 0%) 0 var(--lg-stop), hsl(var(--lg-hs) 20%) var(--lg-stop) 100%);
+  /* добавляем позиционирование относительно других элементов */
+  position: relative;
+  /* подключаем сетку */
+  display: grid;
+  grid-gap: calc(var(--size) / 20);
+  /* выравниваем содержимое блока по центру */
+  align-items: center;
+  /* задаём имена областей внутри сетки */
+  grid-template-areas:
+    "spinner"
+    "trigger";
+  /* устанавливаем размер шрифта */
+  font-size: calc(var(--size) / 21);
+  margin: 20px 0;
+}
+
+/* всё, что относится ко внутренним элементам главного блока, будет находиться в области сетки с названием spinner */
+.deal-wheel > * {
+  grid-area: spinner;
+}
+
+/* сам блок и кнопка будут находиться в области сетки с названием trigger и будут выровнены по центру */
+.deal-wheel .btn-spin {
+  grid-area: trigger;
+  justify-self: center;
+  margin-top: 5%;
+}
+
+/* сектор колеса */
+.spinner {
+  /* добавляем относительное позиционирование */
+  position: relative;
+  /* подключаем сетку */
+  display: grid;
+  /* выравниваем всё по центру */
+  align-items: center;
+  /* добавляем элемент в сетку */
+  grid-template-areas: "spinner";
+  /* устанавливаем размеры */
+  width: var(--size);
+  height: var(--size);
+  /* поворачиваем элемент  */
+  transform: rotate(calc(var(--rotate, 25) * 1deg));
+  /* рисуем круглую обводку, а всё, что не поместится, — будет скрыто за кругом */
+  border-radius: 50%;
+  list-style: none;
+  /* добавляем красивую обводку */
+  box-shadow: 0 0 0 8px rgba(242, 183, 97, 0.8), 0 0 0 12px rgba(242, 183, 97, 0.4), 0 0 30px rgba(242, 183, 97, 0.3);
+}
+
+/* всё, что внутри этого блока, будет находиться в области сетки с названием spinner */
+.spinner * {
+  grid-area: spinner;
+}
+
+/* текст на секторах */
+.prize {
+  /* включаем «гибкую» вёрстку */
+  display: flex;
+  align-items: center;
+  /* задаём отступы от краёв блока */
+  padding: 0 calc(var(--size) / 6) 0 calc(var(--size) / 20);
+  /* устанавливаем размеры */
+  width: 50%;
+  height: 50%;
+  /* устанавливаем координаты, относительно которых будем вращать текст */
+  transform-origin: center right;
+  /* поворачиваем текст */
+  transform: rotate(var(--rotate));
+  /* запрещаем пользователю выделять мышкой текст на секторах */
+  user-select: none;
+  list-style: none;
+}
+
+.prize .text {
+  font-weight: bold;
+  font-size: 1.3em;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 8px rgba(0, 0, 0, 0.6);
+  letter-spacing: 0.5px;
+}
+
+/* язычок */
+.ticker {
+  /* добавляем относительное позиционирование */
+  position: relative;
+  /* устанавливаем размеры */
+  left: calc(var(--size) / -15);
+  width: calc(var(--size) / 10);
+  height: calc(var(--size) / 20);
+  /* фон язычка */
+  background: linear-gradient(45deg, #f2b761, #f7d08a);
+  /* делаем так, чтобы язычок был выше колеса */
+  z-index: 1;
+  /* форма язычка */
+  clip-path: polygon(20% 0, 100% 50%, 20% 100%, 0% 50%);
+  /* устанавливаем точку, относительно которой будет вращаться язычок при движении колеса */
+  transform-origin: center left;
+  /* добавляем тень */
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+/* кнопка запуска колеса */
+.btn-spin {
+  color: #1e1e1e;
+  background: linear-gradient(45deg, #f2b761, #f7d08a);
+  border: none;
+  /* берём размер шрифта такой же, как в колесе */
+  font-size: inherit;
+  font-weight: bold;
+  /* добавляем отступы от текста внутри кнопки */
+  padding: 0.9rem 2rem 1rem;
+  /* скругляем углы */
+  border-radius: 0.5rem;
+  /* меняем внешний вид курсора над кнопкой на руку*/
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(242, 183, 97, 0.3);
+}
+
+.btn-spin:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(242, 183, 97, 0.4);
+}
+
+/* если кнопка нажата и неактивна */
+.btn-spin:disabled {
+  /* меняем внешний вид курсора */
+  cursor: progress;
+  /* делаем кнопку полупрозрачной */
+  opacity: 0.6;
+}
+
+/* анимация вращения */
+.is-spinning .spinner {
+  transition: transform 8s cubic-bezier(0.1, -0.01, 0, 1);
+}
+
+/* анимация движения язычка */
+.is-spinning .ticker {
+  animation: tick 700ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* эффект, когда колесо задевает язычок при вращении */
+@keyframes tick {
+  40% {
+    /* чуть поворачиваем язычок наверх в середине анимации */
+    transform: rotate(-12deg);
+  }
+}
+
+/* анимируем выпавший сектор */
+.prize.selected .text {
+  /* делаем текст белым */
+  color: white;
+  /* настраиваем длительность анимации */
+  animation: selected 800ms ease;
+}
+
+/* настраиваем анимацию текста на выпавшем секторе по кадрам */
+@keyframes selected {
+  /* что происходит на 25% от начала анимации */
+  25% {
+    /* увеличиваем текст в 1,25 раза */
+    transform: scale(1.25);
+    /* добавляем тексту тень */
+    text-shadow: 1vmin 1vmin 0 hsla(0 0% 0% / 0.1);
+  }
+  40% {
+    transform: scale(0.92);
+    text-shadow: 0 0 0 hsla(0 0% 0% / 0.2);
+  }
+  60% {
+    transform: scale(1.02);
+    text-shadow: 0.5vmin 0.5vmin 0 hsla(0 0% 0% / 0.1);
+  }
+  75% {
+    transform: scale(0.98);
+  }
+  85% {
+    transform: scale(1);
+  }
+}
+
+/* Информация о игре */
+.game-info {
+  display: flex;
+  gap: 30px;
+  margin: 40px 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.info-card {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid rgba(242, 183, 97, 0.2);
+  text-align: center;
+  max-width: 250px;
+}
+
+.info-card h3 {
+  color: #f2b761;
+  margin-bottom: 10px;
+}
+
+.info-card p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+/* История выигрышей */
+.recent-wins {
+  width: 100%;
+  max-width: 600px;
+  margin-top: 20px;
+}
+
+.recent-wins h3 {
+  color: #f2b761;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.wins-list {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid rgba(242, 183, 97, 0.2);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.win-item {
+  padding: 10px;
+  margin-bottom: 5px;
+  background: rgba(242, 183, 97, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Модальное окно результата */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  /* Добавляем возможность прокрутки для мобильных */
+  overflow-y: auto;
+}
+
+.modal-content {
+  background: #1e1e1e;
+  margin: 5% auto;
+  padding: 20px;
+  border: 2px solid #f2b761;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+  /* Убираем фиксированную высоту */
+  min-height: auto;
+  /* Добавляем максимальную высоту для больших экранов */
+  max-height: 90vh;
+  /* Добавляем прокрутку если контент не помещается */
+  overflow-y: auto;
+}
+
+.result-animation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.result-stars {
+  font-size: 35px;
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+.result-title {
+  color: #f2b761;
+  font-size: 25px;
+  margin: 0;
+}
+
+.result-prize {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 37px;
+  font-weight: bold;
+  color: #f2b761;
+}
+
+.result-icon {
+  font-size: 30px;
+  padding-bottom: 3px;
+}
+
+.result-message {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 18px;
+}
+
+.result-button {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 15px;
+  background: linear-gradient(45deg, #f2b761, #f7d08a);
+  color: #1e1e1e;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.result-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(242, 183, 97, 0.4);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .header {
+    padding: 15px 20px;
+  }
+
+  .page-title {
+    font-size: 36px;
+  }
+
+  .game-info {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Адаптация модального окна для планшетов */
+  .modal-content {
+    margin: 10% auto;
+    width: 85%;
+    padding: 25px;
+  }
+
+  .result-stars {
+    font-size: 40px;
+  }
+
+  .result-title {
+    font-size: 28px;
+  }
+
+  .result-prize {
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 28px;
+  }
+
+  .page-subtitle {
+    font-size: 16px;
+  }
+
+  /* Адаптация модального окна для мобильных */
+  .modal {
+    /* Убираем blur для лучшей производительности на мобильных */
+    backdrop-filter: none;
+    /* Добавляем отступы для безопасной зоны */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  .modal-content {
+    margin: 15% auto;
+    width: 80%;
+    max-width: none;
+    padding: 20px;
+    border-radius: 15px;
+    /* Уменьшаем максимальную высоту для мобильных */
+    max-height: 80vh;
+  }
+
+  .result-animation {
+    gap: 12px;
+  }
+
+  .result-stars {
+    font-size: 32px;
+  }
+
+  .result-title {
+    font-size: 22px;
+  }
+
+  .result-prize {
+    font-size: 32px;
+  }
+
+  .result-icon {
+    font-size: 26px;
+  }
+
+  .result-message {
+    font-size: 16px;
+  }
+
+  .result-button {
+    padding: 12px 25px;
+    font-size: 15px;
+    width: 100%;
+    max-width: 200px;
+  }
+}
+
+/* Дополнительные стили для очень высоких экранов на мобильных */
+@media (max-height: 600px) and (max-width: 480px) {
+  .modal-content {
+    margin: 5% auto;
+    max-height: 90vh;
+  }
+
+  .result-animation {
+    gap: 8px;
+  }
+
+  .result-stars {
+    font-size: 24px;
+  }
+
+  .result-title {
+    font-size: 18px;
+  }
+
+  .result-prize {
+    font-size: 24px;
+  }
+
+  .result-message {
+    font-size: 13px;
+  }
+}
+
+/* Стили для ландшафтной ориентации на мобильных */
+@media (max-width: 768px) and (orientation: landscape) {
+  .modal-content {
+    margin: 2% auto;
+    max-height: 95vh;
+    width: 80%;
+  }
+
+  .result-animation {
+    gap: 8px;
+  }
+
+  .result-stars {
+    font-size: 28px;
+  }
+
+  .result-title {
+    font-size: 20px;
+  }
+
+  .result-prize {
+    font-size: 28px;
+  }
+}

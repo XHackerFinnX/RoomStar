@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Room Stars - Биржа звезд</title>
+        <link rel="stylesheet" href="/static/css/basic.css">
+        <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    </head>
+    <body>
+        <!-- Декоративные элементы -->
+        <div class="floating-chips">
+            <div class="chip"></div>
+            <div class="chip"></div>
+            <div class="chip"></div>
+            <div class="chip"></div>
+        </div>
+
+        <!-- Хедер -->
+        <header class="header">
+            <!-- Кнопки навигации -->
+            <div class="header-buttons">
+                <button class="cart-btn" onclick="goToHome()" title="Назад">
+                    <span class="colored-arrow">⬅️</span>
+                </button>
+            </div>
+
+            <!-- Кнопка корзины -->
+            <div class="header-buttons">
+                <button class="cart-btn" onclick="openCartModal()" title="Моя корзина">
+                    🛒
+                    <span class="cart-count" id="cart-count">0</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="shop-content">
+            <h1 class="logo">💱 БИРЖА ЗВЕЗД</h1>
+            <p class="subtitle">Выберите количество звезд</p>
+
+            <div class="products-grid" id="products-grid">
+                <!-- Товары будут добавлены через JavaScript -->
+            </div>
+        </main>
+
+        <!-- Модальное окно корзины -->
+        <div id="cartModal" class="modal">
+            <div class="modal-content cart-modal">
+                <span class="close" onclick="closeCartModal()">&times;</span>
+                <h2>Корзина</h2>
+                
+                <div id="cart-items" class="cart-items">
+                    <p class="empty-cart">Корзина пуста</p>
+                </div>
+                
+                <div id="cart-total" class="cart-total" style="display: none;">
+                    <div class="total-line">
+                        <span>Количество звезд:</span>
+                        <span id="total-amount-stars">0 ⭐</span>
+                    </div>
+                    <div class="total-line">
+                        <span>Общая сумма:</span>
+                        <span id="total-amount" class="total-sum">0 ₽</span>
+                    </div>
+                    <button class="game-btn wheel-btn" onclick="proceedToCheckout()">
+                        Продолжить
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно оформления заказа -->
+        <div id="checkoutModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeCheckoutModal()">&times;</span>
+                <h2>Оформление заказа</h2>
+                
+                <div class="user-details">
+                    <h3>Данные пользователя</h3>
+                    <p><strong>Имя:</strong> <span id="user-name">Пользователь</span></p>
+                    <p><strong>Telegram:</strong> <span id="user-telegram">@User</span></p>
+                </div>
+                
+                <div class="order-summary">
+                    <h3>Ваш заказ</h3>
+                    <div id="checkout-items"></div>
+                    <div class="checkout-total">
+                        <strong>Итого: <span id="checkout-total-amount">0 ₽</span> = <span id="checkout-total-amount-stars">0 ⭐</span></strong>
+                    </div>
+                </div>
+                
+                <h3>Способ оплаты</h3>
+                <div class="payment-methods">
+                    <div class="payment-method" onclick="processOrder('card')">
+                        <div class="payment-icon">💳</div>
+                        <div class="payment-info">
+                            <h3>Банковская карта</h3>
+                            <p>Visa, MasterCard, МИР</p>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-method" onclick="processOrder('online')">
+                        <div class="payment-icon">💻</div>
+                        <div class="payment-info">
+                            <h3>Онлайн оплата</h3>
+                            <p>Яндекс.Деньги, WebMoney</p>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-method" onclick="processOrder('crypto')">
+                        <div class="payment-icon">₿</div>
+                        <div class="payment-info">
+                            <h3>Криптокошелек</h3>
+                            <p>Bitcoin, Ethereum, USDT</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="/static/js/shop.js" defer></script>
+    </body>
+</html>

@@ -1,0 +1,8 @@
+aiogram
+fastapi
+asyncpg
+uvicorn
+Jinja2
+requests
+pydantic_settings
+tzdata
