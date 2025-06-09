@@ -12,15 +12,14 @@ class Settings(BaseSettings):
     # Локальный запуск
     # WEBAPP_URL: str = "https://roomstar.serveo.net"
     # WEBHOOK_URL: str = "https://roomstar.serveo.net"
-    # WEBHOOK_PATH: str = "/webhook"
     # APP_HOST: str = "localhost"
-    # APP_PORT: int = 8000
     
     # Продакшен
     WEBAPP_URL: str = "https://roomstars.ru"
     WEBHOOK_URL: str = "https://xhackerfinnx-roomstar-1bf7.twc1.net"
-    WEBHOOK_PATH: str = "/webhook"
     APP_HOST: str = "0.0.0.0"
+    
+    WEBHOOK_PATH: str = "/webhook"
     APP_PORT: int = 8000
     
     model_config: SettingsConfigDict = SettingsConfigDict(
