@@ -43,3 +43,9 @@ async def start_bot(message: Message, bot: Bot):
         text=f"{HELLO_START_TEXT}{html.bold(user_name)}!{MENU_TEXT}",
         reply_markup=markup_start
     )
+    
+# @router.message()
+# async def handle_message(message: Message):
+#     chat = message.chat
+#     print(f"Название чата: {chat.title}")
+#     print(f"ID чата: {chat.id}")

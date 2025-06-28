@@ -48,7 +48,29 @@ async def add_user(
             print(f"Ошибка при обновлении данных пользователя в БД: {error}")
             return False
         
-        
+
+async def select_user_proof_data(user_id: int):
+    query = """
+    SELECT 
+        u.user_id, u.name, u.tgname,
+        b.basket_id, b.product_list, b.total_sum_rub, b.total_sum_star,
+        p.date
+    FROM proofs AS p
+    JOIN users AS u ON u.user_id = p.user_id
+    JOIN basket AS b ON b.user_id = p.user_id
+    WHERE u.user_id = $1 AND b.status = false
+    ORDER BY p.date DESC
+    LIMIT 1
+    """
+    
+    try:
+        pool = await Database.connect()
+        async with pool.acquire() as conn:
+            users_data = await conn.fetch(query, user_id)
+            return users_data
+    except Exception as error:
+        print(f"Ошибка в получении данных чека и пользователя {user_id} в БД: {error}")
+  
 async def add_wheel_user(user_id: int):
     
     query = """

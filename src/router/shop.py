@@ -3,7 +3,7 @@ import json
 from zoneinfo import ZoneInfo
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
-from fastapi import APIRouter, Depends, HTTPException, Request, status, UploadFile, File, Form
+from fastapi import APIRouter, Depends, HTTPException, Request, status, UploadFile, File, Form, BackgroundTasks
 from pydantic import BaseModel
 from db.models.user import add_basket, get_product_shop, get_saved_basket, save_basket, status_basket_user_expectation
 from db.models.pay import add_proofs
@@ -12,6 +12,7 @@ from random import randint, shuffle
 from werkzeug.utils import secure_filename
 from auth.telegram_auth import get_verified_user
 from datetime import datetime
+from bot.handler.message import message_group_proof
 
 router = APIRouter(
     prefix="",
@@ -95,24 +96,29 @@ async def get_busket_user(request: UserRequest, user_data: dict = Depends(get_ve
 async def expectation_basket_user(request: UserRequest, user_data: dict = Depends(get_verified_user)):
     user_id = user_data.user.id
     if user_id == request.user_id:
-        await status_basket_user_expectation(request.user_id)
+        # await status_basket_user_expectation(request.user_id)
+        return True
     else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Invalid initData")
     
     
 @router.post("/api/upload-proof")
 async def upload_proof(
+    background_tasks: BackgroundTasks,
     user_id: str = Form(...),                     
-    proof: UploadFile = File(...),               
-    user_data: dict = Depends(get_verified_user)
+    proof: UploadFile = File(...),        
+    user_data: dict = Depends(get_verified_user),
 ):
     if str(user_id) != str(user_data.user.id):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid initData")
 
-    content = await proof.read()
-    filename = secure_filename(proof.filename)
-    date = datetime.now(MOSCOW_TZ).replace(tzinfo=None)
+    try:
+        content = await proof.read()
+        filename = secure_filename(proof.filename)
+        date = datetime.now(MOSCOW_TZ).replace(tzinfo=None)
 
-    await add_proofs(int(user_id), filename, content, date)
-
-    return {"status": "success"}
+        await add_proofs(int(user_id), filename, content, date)
+        background_tasks.add_task(message_group_proof, int(user_id), filename, content, date)
+        return {"status": "success"}
+    except:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Data")
