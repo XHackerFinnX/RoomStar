@@ -10,8 +10,8 @@ class Settings(BaseSettings):
     POSTGRESQL_DATABASE: SecretStr
     
     # Локальный запуск
-    # WEBAPP_URL: str = "https://roomstar.serveo.net"
-    # WEBHOOK_URL: str = "https://roomstar.serveo.net"
+    # WEBAPP_URL: str = ""
+    # WEBHOOK_URL: str = ""
     # APP_HOST: str = "localhost"
     
     # Продакшен
