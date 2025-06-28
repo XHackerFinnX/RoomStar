@@ -3,6 +3,7 @@ from pydantic import SecretStr
 
 class Settings(BaseSettings):
     BOT_TOKEN: SecretStr
+    ADMIN_GROUP_ID: SecretStr
     POSTGRESQL_USER: SecretStr
     POSTGRESQL_PASSWORD: SecretStr
     POSTGRESQL_HOST: SecretStr
