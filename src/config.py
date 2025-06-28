@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     
     # Продакшен
     WEBAPP_URL: str = "https://roomstars.ru"
-    WEBHOOK_URL: str = "https://xhackerfinnx-roomstar-1bf7.twc1.net"
+    WEBHOOK_URL: str = "https://roomstars.ru"
     APP_HOST: str = "0.0.0.0"
     
     WEBHOOK_PATH: str = "/webhook"
