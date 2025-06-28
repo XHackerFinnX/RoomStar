@@ -110,20 +110,20 @@ async function fetchUserDownloadBasket(userId) {
   }
 }
 
-async function fetchExpectationStatusUser(userId) {
-  try {
-    await fetch("/api/expectation-basket-user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Telegram-InitData": Telegram.WebApp.initData,
-      },
-      body: JSON.stringify({ user_id: userId })
-    });
-  } catch (err) {
-    console.error("Ошибка при обновлении корзины в статус ожидание оплаты:", err);
-  }
-}
+// async function fetchExpectationStatusUser(userId) {
+//   try {
+//     await fetch("/api/expectation-basket-user", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         "X-Telegram-InitData": Telegram.WebApp.initData,
+//       },
+//       body: JSON.stringify({ user_id: userId })
+//     });
+//   } catch (err) {
+//     console.error("Ошибка при обновлении корзины в статус ожидание оплаты:", err);
+//   }
+// }
 
 function goToHome() {
   window.location.href = "/"
@@ -496,7 +496,7 @@ async function submitPaymentProof() {
     alert('Звезды скоро поступят вам на баланс.');
     updateCartCount();
     closeCheckoutModal();
-    await fetchExpectationStatusUser(userId);
+    // await fetchExpectationStatusUser(userId);
     window.location.href = "/";
   } catch (err) {
     alert('Ошибка при загрузке файла');
