@@ -18,7 +18,9 @@ MOSCOW_TZ = ZoneInfo("Europe/Moscow")
 logger = setup_logger("Message")
 
 async def message_group_proof(user_id: int, filename: str, content: bytes, date):
-    GROUP_CHAT_ID = config.ADMIN_GROUP_ID.get_secret_value()
+    # GROUP_CHAT_ID = config.ADMIN_GROUP_ID.get_secret_value()
+    GROUP_CHAT_ID = -1002858742490
+    print('Отправляем запрос на подтверждение чека!')
     await asyncio.sleep(3)
 
     user_data = await select_user_proof_data(user_id)
