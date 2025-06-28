@@ -83,7 +83,6 @@ async function fetchUserDownloadBasket(userId) {
     });
 
     const data = await response.json();
-    console.log(data);
 
     if (data?.list_products?.length) {
       cart = data.list_products.map(([productId, productName, quantity]) => {
@@ -91,6 +90,10 @@ async function fetchUserDownloadBasket(userId) {
         if (!product) {
           console.warn("Продукт не найден по ID:", productId);
           return null;
+        }
+        if (productId == 1) {
+          const starInput = document.getElementById('star-count');
+          starInput.value = quantity;
         }
         return {
           id: product.product_id,
@@ -133,43 +136,93 @@ function initializeShop() {
   productsGrid.innerHTML = ""
 
   products.forEach((product) => {
-    const productCard = document.createElement("div")
-    productCard.className = "product-card"
+    if (product.product_id == 1) {
+      return;
+    } else {
+      const productCard = document.createElement("div")
+      productCard.className = "product-card compact"
 
-    const cartItem = cart.find((item) => item.id === product.product_id)
-    const quantity = cartItem ? cartItem.quantity : 0
-
-    productCard.innerHTML = `
-      <div class="product-image">${product.image}</div>
-      <div class="product-name">${product.name}</div>
-      <div class="product-price">
-        <span class="old-price">${product.old_price} ₽</span>
-        <span class="new-price">${product.new_price} ₽</span>
-      </div>
-      <div class="product-controls">
-        ${
-          quantity === 0
-            ? `<button class="add-btn" onclick="addToCart(${product.product_id})">+</button>`
-            : `
-              <button class="quantity-btn" onclick="removeFromCart(${product.product_id})">−</button>
-              <span class="quantity-display">${quantity}</span>
-              <button class="quantity-btn" onclick="addToCart(${product.product_id})">+</button>
-            `
-        }
-      </div>
-    `
-    productsGrid.appendChild(productCard)
+      const cartItem = cart.find((item) => item.id === product.product_id)
+      const quantity = cartItem ? cartItem.quantity : 0
+      productCard.innerHTML = `
+          <div class="product-left">
+            <div class="product-image">${product.image}</div>
+            <div class="product-info">
+              <div class="product-name">${product.name}</div>
+              <div class="product-price">
+                <span class="new-price">${product.new_price} ₽</span>
+              </div>
+            </div>
+          </div>
+          <div class="product-controls">
+            ${
+              quantity === 0
+                ? `<button class="add-btn" onclick="addToCart(${product.product_id})">+</button>`
+                : `
+                  <button class="quantity-btn" onclick="removeFromCart(${product.product_id})">−</button>
+                  <span class="quantity-display">${quantity}</span>
+                  <button class="quantity-btn" onclick="addToCart(${product.product_id})">+</button>
+                `
+            }
+          </div>
+      `
+      productsGrid.appendChild(productCard)
+    }
   })
 }
 
-function addToCart(productId) {
-  const product = products.find((p) => p.product_id === productId)
-  if (!product) return
+// Обработчик для поля ввода количества звёзд
+const starInput = document.getElementById('star-count');
+if (starInput) {
+  starInput.addEventListener('input', function() {
+    let value = parseInt(this.value);
+    if (isNaN(value) || value < 0) {
+      value = 0;
+    }
 
-  const existingItem = cart.find((item) => item.id === productId)
+    // Найдем товар-звезды, например, с product_id === 'stars'
+    const starProduct = products.find(p => p.product_id === 'stars') || products[0];
+    if (!starProduct) return;
+
+    // Очистить корзину
+    cart = [];
+
+    // Если value > 0, добавляем звёздный товар
+    if (value > 0) {
+      cart.push({
+        id: starProduct.product_id,
+        name: starProduct.name,
+        image: starProduct.image,
+        price: starProduct.new_price,
+        quantity: value,
+        stars: starProduct.stars_price,
+      });
+    }
+
+    updateCartCount();
+    initializeShop();
+  });
+}
+
+function addToCart(productId) {
+  const starInput = document.getElementById('star-count');
+  if (starInput) {
+    starInput.value = ''; // сбросить поле ввода
+  }
+
+  // Удалить звёздный товар из корзины, если он есть
+  const starProduct = products.find(p => p.product_id === 'stars') || products[0];
+  if (starProduct) {
+    cart = cart.filter(item => item.id !== starProduct.product_id);
+  }
+
+  const product = products.find((p) => p.product_id === productId);
+  if (!product) return;
+
+  const existingItem = cart.find((item) => item.id === productId);
 
   if (existingItem) {
-    existingItem.quantity += 1
+    existingItem.quantity += 1;
   } else {
     cart.push({
       id: product.product_id,
@@ -178,28 +231,23 @@ function addToCart(productId) {
       price: product.new_price,
       quantity: 1,
       stars: product.stars_price,
-    })
+    });
   }
 
-  updateCartCount()
-  if (document.getElementById("products-grid")) {
-    initializeShop()
-  }
+  updateCartCount();
+  initializeShop();
 }
 
 function removeFromCart(productId) {
-  const existingItem = cart.find((item) => item.id === productId)
-  if (existingItem) {
-    existingItem.quantity -= 1
-    if (existingItem.quantity <= 0) {
-      cart = cart.filter((item) => item.id !== productId)
-    }
+  const starInput = document.getElementById('star-count');
+  if (starInput) {
+    starInput.value = ''; // сбросить поле ввода
   }
-  updateCartCount()
-  updateCartDisplay()
-  if (document.getElementById("products-grid")) {
-    initializeShop()
-  }
+
+  cart = cart.filter(item => item.id !== productId);
+
+  updateCartCount();
+  initializeShop();
 }
 
 function updateCartCount() {
@@ -240,7 +288,7 @@ async function updateCartDisplay() {
   const list_products = [];
 
   cart.forEach((item) => {
-    const itemTotal = item.price * item.quantity;
+    const itemTotal = Math.round(item.price * item.quantity * 100) / 100;
     const itemTotalStars = item.stars * item.quantity;
     totalAmount += itemTotal;
     totalAmountStars += itemTotalStars;
@@ -310,7 +358,7 @@ function updateCheckoutDisplay() {
   let totalAmountStars = 0
 
   cart.forEach((item) => {
-    const itemTotal = item.price * item.quantity
+    const itemTotal = Math.round(item.price * item.quantity * 100) / 100;
     const itemTotalStars = item.stars * item.quantity
     totalAmount += itemTotal
     totalAmountStars += itemTotalStars
@@ -330,39 +378,146 @@ function updateCheckoutDisplay() {
 }
 
 async function processOrder(method) {
-  cart = []
-  updateCartCount()
-  closeCheckoutModal()
-  await fetchExpectationStatusUser(userId)
-  alert(`Оплата прошла успешно! Спасибо за покупку. Способ оплаты: ${getPaymentMethodName(method)}`)
-  window.location.href = "/"
-}
+  if (method === "card") {
+    const bankDetails = document.getElementById("bank-transfer-details");
+    if (bankDetails) {
+      bankDetails.style.display = "block";
 
-function getPaymentMethodName(method) {
-  switch (method) {
-    case "card": return "Банковская карта"
-    case "online": return "Онлайн оплата"
-    case "crypto": return "Криптокошелек"
-    default: return "Неизвестный способ"
+      const userIdDisplay = document.getElementById("bank-user-id");
+      if (userIdDisplay && userId) {
+        userIdDisplay.textContent = userId;
+      }
+    }
+    return; // Не завершаем заказ, ждем чек
+  }
+
+  try {
+    await fetch("/api/add-order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Telegram-InitData": Telegram.WebApp.initData,
+      },
+      body: JSON.stringify({
+        user_id: userId,
+        list_products: cart.map(item => [item.id, item.name, item.quantity]),
+        payment_method: method,
+      }),
+    });
+
+    cart = [];
+    updateCartCount();
+    initializeShop();
+    closeCheckoutModal();
+  } catch (err) {
+    console.error("Ошибка при оформлении заказа:", err);
   }
 }
 
-// Загрузка при старте страницы
-document.addEventListener("DOMContentLoaded", async function () {
-  const tg = window.Telegram?.WebApp;
-  userId = tg?.initDataUnsafe?.user?.id || null;
-
+async function init() {
+  userId = Telegram.WebApp.initDataUnsafe.user.id;
   if (!userId) {
-    window.location.href = "/error";
+    console.error("Не удалось получить userId");
     return;
   }
 
+  await fetchProducts();
   await fetchUserData(userId);
-
-  await fetchProducts();                  // Ждем загрузки товаров
-  await fetchUserBasket(userId);         // Создаем корзину для пользователя
-  await fetchUserDownloadBasket(userId); // Загружаем содержимое корзины
+  await fetchUserBasket(userId);
+  await fetchUserDownloadBasket(userId);
 
   updateCartCount();
-  initializeShop();                      // Обновляем интерфейс
+  initializeShop();
+
+  // Инициализация обработчика для поля ввода (вызовется в конце init)
+  const starInput = document.getElementById('star-count');
+  if (starInput) {
+    starInput.addEventListener('input', function() {
+      let value = parseInt(this.value);
+      if (isNaN(value) || value < 0) {
+        value = 0;
+      }
+
+      const starProduct = products.find(p => p.product_id === 'stars') || products[0];
+      if (!starProduct) return;
+
+      cart = [];
+
+      if (value > 0) {
+        cart.push({
+          id: starProduct.product_id,
+          name: starProduct.name,
+          image: starProduct.image,
+          price: starProduct.new_price,
+          quantity: value,
+          stars: starProduct.stars_price,
+        });
+      }
+
+      updateCartCount();
+      initializeShop();
+    });
+  }
+}
+
+init();
+
+function selectPaymentMethod(method) {
+  if (method === 'card') {
+    document.getElementById('payment-details').style.display = 'block';
+  }
+}
+
+async function submitPaymentProof() {
+  const fileInput = document.getElementById('payment-proof');
+  const file = fileInput.files[0];
+
+  if (!file) {
+    alert('Пожалуйста, загрузите чек.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('user_id', userId);
+  formData.append('proof', file);
+  console.log(formData);
+
+  try {
+    const response = await fetch('/api/upload-proof', {
+      method: 'POST',
+      headers: {
+        'X-Telegram-InitData': Telegram.WebApp.initData,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) throw new Error('Upload failed');
+
+    alert('Звезды скоро поступят вам на баланс.');
+    updateCartCount();
+    closeCheckoutModal();
+    await fetchExpectationStatusUser(userId);
+    window.location.href = "/";
+  } catch (err) {
+    alert('Ошибка при загрузке файла');
+    console.error(err);
+  }
+}
+
+// JavaScript для отображения информации о файле
+document.getElementById('payment-proof').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const fileInfo = document.getElementById('file-info');
+    const fileName = document.getElementById('file-name');
+    const fileSize = document.getElementById('file-size');
+    
+    if (file) {
+        this.classList.add('has-file');
+        fileName.textContent = file.name;
+        fileSize.textContent = `Размер: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+        fileInfo.classList.add('show');
+    } else {
+        this.classList.remove('has-file');
+        fileInfo.classList.remove('show');
+    }
 });

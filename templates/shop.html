@@ -39,6 +39,11 @@
             <h1 class="logo">💱 БИРЖА ЗВЕЗД</h1>
             <p class="subtitle">Выберите количество звезд</p>
 
+            <div class="stars-input-container full-width">
+                <label for="star-count">Введите количество звёзд:</label>
+                <input type="number" id="star-count" class="star-input" placeholder="Например, 5" min="0" step="1" />
+            </div>
+
             <div class="products-grid" id="products-grid">
                 <!-- Товары будут добавлены через JavaScript -->
             </div>
@@ -75,46 +80,54 @@
             <div class="modal-content">
                 <span class="close" onclick="closeCheckoutModal()">&times;</span>
                 <h2>Оформление заказа</h2>
-                
+
                 <div class="user-details">
-                    <h3>Данные пользователя</h3>
-                    <p><strong>Имя:</strong> <span id="user-name">Пользователь</span></p>
-                    <p><strong>Telegram:</strong> <span id="user-telegram">@User</span></p>
+                <h3>Данные пользователя</h3>
+                <p><strong>Имя:</strong> <span id="user-name">Пользователь</span></p>
+                <p><strong>Telegram:</strong> <span id="user-telegram">@User</span></p>
                 </div>
-                
+
                 <div class="order-summary">
-                    <h3>Ваш заказ</h3>
-                    <div id="checkout-items"></div>
-                    <div class="checkout-total">
-                        <strong>Итого: <span id="checkout-total-amount">0 ₽</span> = <span id="checkout-total-amount-stars">0 ⭐</span></strong>
-                    </div>
+                <h3>Ваш заказ</h3>
+                <div id="checkout-items"></div>
+                <div class="checkout-total">
+                    <strong>Итого: <span id="checkout-total-amount">0 ₽</span> = <span id="checkout-total-amount-stars">0 ⭐</span></strong>
                 </div>
-                
+                </div>
+
                 <h3>Способ оплаты</h3>
                 <div class="payment-methods">
-                    <div class="payment-method" onclick="processOrder('card')">
-                        <div class="payment-icon">💳</div>
-                        <div class="payment-info">
-                            <h3>Банковская карта</h3>
-                            <p>Visa, MasterCard, МИР</p>
+                <div class="payment-method" onclick="selectPaymentMethod('card')">
+                    <div class="payment-icon">💳</div>
+                    <div class="payment-info">
+                    <h3>Банковская карта</h3>
+                    <p>Visa, MasterCard, МИР</p>
+                    </div>
+                </div>
+                </div>
+
+                <div id="payment-details" style="display:none; margin-top:20px;">
+                <h3>Детали для перевода:</h3>
+                <p><strong>Банковский счет:</strong></p>
+                <p>4081 2345 6789 0000</p>
+                <div>
+                    <label for="payment-proof-left">Загрузите чек:</label>
+                    <div class="file-input-container">
+                        <input type="file" id="payment-proof" class="file-input" accept="image/*,application/pdf">
+                        <label for="payment-proof" class="file-input-label">
+                            <svg class="upload-icon" viewBox="0 0 24 24">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                            </svg>
+                            <span class="text-file">Выберите файл</span>
+                        </label>
+                        <div class="file-info" id="file-info">
+                            <div class="file-name" id="file-name"></div>
+                            <div class="file-size" id="file-size"></div>
                         </div>
                     </div>
-                    
-                    <div class="payment-method" onclick="processOrder('online')">
-                        <div class="payment-icon">💻</div>
-                        <div class="payment-info">
-                            <h3>Онлайн оплата</h3>
-                            <p>Яндекс.Деньги, WebMoney</p>
-                        </div>
-                    </div>
-                    
-                    <div class="payment-method" onclick="processOrder('crypto')">
-                        <div class="payment-icon">₿</div>
-                        <div class="payment-info">
-                            <h3>Криптокошелек</h3>
-                            <p>Bitcoin, Ethereum, USDT</p>
-                        </div>
-                    </div>
+                </div>
+
+                <button class="game-btn wheel-btn" style="margin-top: 10px;" onclick="submitPaymentProof()">Отправить</button>
                 </div>
             </div>
         </div>

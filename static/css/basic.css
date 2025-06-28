@@ -377,13 +377,8 @@ body::before {
   align-items: center;
   justify-content: center;
   font-size: 48px;
-  box-shadow: 0 8px 25px rgba(242, 183, 97, 0.3);
+  /* box-shadow: 0 8px 25px rgba(242, 183, 97, 0.3); */
   transition: all 0.3s ease;
-}
-
-.product-card:hover .product-image {
-  transform: scale(1.05);
-  box-shadow: 0 12px 35px rgba(242, 183, 97, 0.4);
 }
 
 .product-name {
@@ -407,7 +402,7 @@ body::before {
 .new-price {
   color: #f2b761;
   font-weight: bold;
-  font-size: 21px;
+  font-size: 14px;
 }
 
 .product-controls {
@@ -542,7 +537,7 @@ body::before {
   color: #f2b761;
   margin-bottom: 8px;
   font-size: 16px;
-  margin-right: 30px;
+  margin-right: 80px;
 }
 
 .cart-item-quantity {
@@ -762,4 +757,324 @@ body::before {
   position: fixed; /* Фиксируем позицию (чтобы страница не прыгала) */
   width: 100%; /* Ширина на весь экран */
   height: 100%; /* Высота на весь экран */
+}
+
+
+
+
+#payment-details {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid rgba(242, 183, 97, 0.2);
+  box-shadow: 0 8px 25px rgba(242, 183, 97, 0.1);
+  color: #fff;
+  max-width: 600px;
+  margin: 40px auto 0;
+  display: none;
+}
+
+#payment-details h3 {
+  color: #f2b761;
+  margin-bottom: 15px;
+  font-size: 22px;
+}
+
+#payment-details p {
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+#payment-details p strong {
+  color: #f2b761;
+}
+
+#payment-details small {
+  font-size: 12px;
+  color: rgba(242, 183, 97, 0.8);
+  display: block;
+  margin-top: 5px;
+}
+
+#payment-details label {
+  display: block;
+  font-weight: bold;
+  color: #f2b761;
+}
+
+#payment-proof {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+#payment-proof:hover {
+  border-color: rgba(242, 183, 97, 0.4);
+}
+
+
+
+.text-file {
+  margin-bottom: 10px;
+}
+
+.file-input-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 400px;
+}
+
+.file-input {
+    /* position: absolute; */
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.file-input-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 14px 5px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #64748b;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.file-input-label::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.file-input-label:hover {
+    border-color: #3b82f6;
+    background: #f8fafc;
+    color: #3b82f6;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+}
+
+.file-input-label:hover::before {
+    left: 100%;
+}
+
+.file-input:focus + .file-input-label {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+.file-input.has-file + .file-input-label {
+    border-color: #10b981;
+    background: #f0fdf4;
+    color: #059669;
+}
+
+.upload-icon {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+    padding-top: 5px;
+}
+
+.file-info {
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: #f1f5f9;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #475569;
+    display: none;
+}
+
+.file-info.show {
+    display: block;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.file-name {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.file-size {
+    color: #64748b;
+    font-size: 12px;
+}
+
+/* Альтернативный стиль - кнопка */
+.file-input-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.file-input-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.file-input-button:active {
+    transform: translateY(0);
+}
+
+
+
+
+
+
+
+
+
+
+.product-card.compact {
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  gap: 10px;
+}
+
+.product-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.product-card.compact .product-image {
+  width: 55px;
+  height: 55px;
+  font-size: 24px;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding: 4px 0;
+  overflow: hidden;
+}
+
+.product-info .product-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #f2b761;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 15px;
+}
+
+.product-info .product-price {
+  font-size: 12px;
+  display: flex;
+  gap: 5px;
+}
+
+.product-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.product-controls .add-btn,
+.product-controls .quantity-btn {
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+}
+
+.product-controls .quantity-display {
+  font-size: 14px;
+  min-width: 24px;
+}
+
+
+
+.stars-input-container.full-width {
+  width: 100%;
+  max-width: 100%;
+  padding: 15px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(242, 183, 97, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(242, 183, 97, 0.1);
+  margin-bottom: 30px;
+  box-sizing: border-box;
+}
+
+.stars-input-container label {
+  color: #f2b761;
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.star-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(242, 183, 97, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.star-input:focus {
+  border-color: #f2b761;
+  box-shadow: 0 0 10px rgba(242, 183, 97, 0.4);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.star-input::-webkit-outer-spin-button,
+.star-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
