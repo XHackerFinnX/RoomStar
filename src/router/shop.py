@@ -1,13 +1,17 @@
+import base64
 import json
+from zoneinfo import ZoneInfo
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status, UploadFile, File, Form
 from pydantic import BaseModel
 from db.models.user import add_basket, get_product_shop, get_saved_basket, save_basket, status_basket_user_expectation
+from db.models.pay import add_proofs
 from log.log import setup_logger
 from random import randint, shuffle
-
+from werkzeug.utils import secure_filename
 from auth.telegram_auth import get_verified_user
+from datetime import datetime
 
 router = APIRouter(
     prefix="",
@@ -16,6 +20,7 @@ router = APIRouter(
 
 templates = Jinja2Templates(directory="templates")
 logger = setup_logger("Shop")
+MOSCOW_TZ = ZoneInfo("Europe/Moscow")
 
 class UserRequest(BaseModel):
     user_id: int
@@ -23,8 +28,12 @@ class UserRequest(BaseModel):
 class UserBasket(BaseModel):
     user_id: int
     list_products: list
-    total_sum_rub: int
+    total_sum_rub: float
     total_sum_star: int
+    
+class UserPay(BaseModel):
+    user_id: int
+    proof: UploadFile = File(...)
 
 @router.get("/shop", response_class=HTMLResponse)
 async def main_basic(request: Request):
@@ -89,3 +98,21 @@ async def expectation_basket_user(request: UserRequest, user_data: dict = Depend
         await status_basket_user_expectation(request.user_id)
     else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Invalid initData")
+    
+    
+@router.post("/api/upload-proof")
+async def upload_proof(
+    user_id: str = Form(...),                     
+    proof: UploadFile = File(...),               
+    user_data: dict = Depends(get_verified_user)
+):
+    if str(user_id) != str(user_data.user.id):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid initData")
+
+    content = await proof.read()
+    filename = secure_filename(proof.filename)
+    date = datetime.now(MOSCOW_TZ).replace(tzinfo=None)
+
+    await add_proofs(int(user_id), filename, content, date)
+
+    return {"status": "success"}
