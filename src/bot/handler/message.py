@@ -42,7 +42,8 @@ async def message_group_proof(user_id: int, filename: str, content: bytes, date)
         product_lines += f"{idx}. <b>{name}</b> — <code>{count} шт.</code>\n"
 
     caption = (
-        f"<b>🧾 Новая заявка на подтверждение оплаты</b>\n\n"
+        f"<b>🧾 Новая заявка {user['basket_id']} на подтверждение оплаты</b>\n\n"
+        f"<b>ID: {user_id}</b>\n"
         f"<b>👤 Пользователь:</b> <a href='tg://user?id={user_id}'>{user['name']}</a> ({user['tgname']})\n"
         f"<b>🛍️ Покупки:</b>\n{product_lines}\n"
         f"<b>💳 Сумма к оплате:</b> {user['total_sum_rub']} ₽\n"
