@@ -12,7 +12,7 @@ from router.basic import router as router_basic
 from router.shop import router as router_shop
 from router.wheel import router as router_wheel
 
-from bot.handler import commands
+from bot.handler import commands, proof
 
 from aiogram import Bot, Dispatcher
 from aiogram.types import Update
@@ -68,7 +68,8 @@ app.include_router(router_shop)
 app.include_router(router_wheel)
 
 dp.include_routers(
-    commands.router
+    commands.router,
+    proof.router
 )
 
 @app.post(config.WEBHOOK_PATH)
