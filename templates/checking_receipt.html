@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подтверждение оплаты</title>
+    <link rel="stylesheet" href="/static/css/checking_receipt.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Form State -->
+        <div id="form-state" class="page-container">
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon-container pulse">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                            <line x1="1" y1="10" x2="23" y2="10"/>
+                        </svg>
+                    </div>
+                    <h1 class="card-title">Подтверждение оплаты</h1>
+                    <p class="card-description">Переведите средства и загрузите чек</p>
+                </div>
+
+                <div class="card-content">
+                    <!-- Timer Alert -->
+                    <div class="alert">
+                        <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12,6 12,12 16,14"/>
+                        </svg>
+                        <span id="timer-text">Время на оплату: </span>
+                    </div>
+
+                    <!-- Account Details -->
+                    <div class="section">
+                        <label class="section-label">Реквизиты для перевода</label>
+                        <div class="details-container">
+                            <div class="detail-row">
+                                <span class="detail-label">Получатель:</span>
+                                <span class="detail-value">ООО «Платежные Системы»</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Банк:</span>
+                                <span class="detail-value">Сбербанк России</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Сумма к переводу:</span>
+                                <span class="detail-amount">{{total_sum_rub}} ₽</span>
+                            </div>
+                            <div class="detail-row group">
+                                <span class="detail-label">Номер счета:</span>
+                                <div class="account-container">
+                                    <span class="account-number">4276 3800 1234 5678</span>
+                                    <button class="copy-btn" onclick="copyToClipboard('4276 3800 1234 5678')">
+                                        <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- File Upload -->
+                    <div class="section">
+                        <label class="section-label">Загрузите чек об оплате</label>
+                        <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.pdf" style="display: none;">
+                        <button class="upload-btn" onclick="document.getElementById('file-input').click()">
+                            <div class="upload-content">
+                                <div id="upload-icon">
+                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="7,10 12,15 17,10"/>
+                                        <line x1="12" y1="15" x2="12" y2="3"/>
+                                    </svg>
+                                </div>
+                                <div id="upload-text">
+                                    <div class="upload-main-text">Нажмите для загрузки</div>
+                                    <div class="upload-sub-text">JPG, PNG или PDF</div>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button id="submit-btn" class="submit-btn" disabled onclick="handleSubmit()">
+                        Сначала загрузите чек
+                    </button>
+                    <button class="cancel-btn" onclick="handleCancel()">Отменить операцию</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Processing State -->
+        <div id="processing-state" class="page-container" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon-container">
+                        <svg class="icon spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="2" x2="12" y2="6"/>
+                            <line x1="12" y1="18" x2="12" y2="22"/>
+                            <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/>
+                            <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/>
+                            <line x1="2" y1="12" x2="6" y2="12"/>
+                            <line x1="18" y1="12" x2="22" y2="12"/>
+                            <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/>
+                            <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
+                        </svg>
+                    </div>
+                    <h1 class="card-title">Обработка платежа</h1>
+                    <p class="card-description">Не закрывайте страницу, скоро поступят средства</p>
+                </div>
+                <div class="card-content">
+                    <div class="processing-info">
+                        <p class="processing-main">Проверяем поступление средств...</p>
+                        <p class="processing-sub">Обычно это занимает до 10 минут</p>
+                    </div>
+                    <div class="alert">
+                        <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12,6 12,12 16,14"/>
+                        </svg>
+                        <span>Максимальное время ожидания: 10 мин.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success State -->
+        <div id="success-state" class="page-container" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon-container bounce">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22,4 12,14.01 9,11.01"/>
+                        </svg>
+                    </div>
+                    <h1 class="card-title">Платеж успешен!</h1>
+                    <p class="card-description">{{total_sum_star}} ⭐ звезд успешно пришли на счет</p>
+                </div>
+                <div class="card-content">
+                    <button class="outline-btn" onclick="resetForm()">Назад к бирже звезд</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div id="error-state" class="page-container" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon-container pulse">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                    </div>
+                    <h1 class="card-title error-title">Ошибка операции</h1>
+                    <p class="card-description">Произошла ошибка при обработке платежа</p>
+                </div>
+                <div class="card-content">
+                    <div class="error-info">
+                        <p class="error-main">Платеж не был обработан</p>
+                        <p class="error-sub">Проверьте данные и попробуйте еще раз</p>
+                    </div>
+                    <div class="button-group">
+                        <button class="submit-btn" onclick="handleCancel()">Попробовать снова</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expired State -->
+        <div id="expired-state" class="page-container" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon-container">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                    </div>
+                    <h1 class="card-title error-title">Время истекло</h1>
+                    <p class="card-description">К сожалению, время для подтверждения оплаты истекло</p>
+                </div>
+                <div class="card-content">
+                    <button class="submit-btn" onclick="handleCancel()">Попробовать снова</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/checking_receipt.js" defer></script>
+    <script>
+        window.initialTimeLeft = "{{time_date}}";
+        let statusPay = "{{status_pay}}";
+        let basketId = "{{basket_id}}";
+        let userId = "{{user_id}}"
+        let secretId = "{{secret_id}}"
+    </script>
+</body>
+</html>

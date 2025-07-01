@@ -27,6 +27,10 @@ document.addEventListener("DOMContentLoaded", async function () {
             avatarDiv.innerHTML = `<img src="data:image/jpeg;base64,${data.avatar_base64}" alt="avatar" style="width:40px; height:40px; border-radius:50%;">`;
         }
 
+        if (data.redirect_url) {
+            window.location.href = data.redirect_url;
+        }
+
     } catch (err) {
         console.error("Ошибка загрузки профиля:", err);
     }

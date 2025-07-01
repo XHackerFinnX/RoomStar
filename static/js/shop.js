@@ -462,9 +462,34 @@ async function init() {
 
 init();
 
-function selectPaymentMethod(method) {
+
+async function selectPaymentMethod(method) {
   if (method === 'card') {
-    document.getElementById('payment-details').style.display = 'block';
+    // document.getElementById('payment-details').style.display = 'block';
+    try {
+      const response = await fetch("/api/get-basket-id", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Telegram-InitData": Telegram.WebApp.initData,
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          type_pay: 'card'
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        console.error("Ошибка сервера:", error);
+        return;
+      }
+
+      const data = await response.json();
+      window.location.href = `/checking_payment?user_id=${userId}&basket_id=${data.basket_id}&type_pay=card&secret_id=${data.secret_id}`;
+    } catch (err) {
+      console.error("Ошибка при получении данных корзины:", err);
+    }
   }
 }
 
@@ -496,7 +521,6 @@ async function submitPaymentProof() {
     alert('Звезды скоро поступят вам на баланс.');
     updateCartCount();
     closeCheckoutModal();
-    // await fetchExpectationStatusUser(userId);
     window.location.href = "/";
   } catch (err) {
     alert('Ошибка при загрузке файла');

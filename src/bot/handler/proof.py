@@ -1,13 +1,15 @@
 from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.utils.formatting import as_marked_section, Bold
+from db.models.pay import get_basket_all_bot_message, update_status_checking_pay
 
 router = Router()
 
 @router.callback_query(F.data.startswith("approve_"))
 async def approve_payment(callback: CallbackQuery, bot: Bot):
     user_id = int(callback.data.split("_")[1])
-
+    data_basket = await get_basket_all_bot_message(user_id)
+    secret_id = data_basket['secret_id']
+    basket_id = data_basket['basket_id']
     # Новый markup с результатом
     new_markup = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="✅ Подтверждено", callback_data="noop")]
@@ -26,12 +28,16 @@ async def approve_payment(callback: CallbackQuery, bot: Bot):
     )
 
     await callback.answer("Оплата подтверждена ✅", show_alert=False)
+    
+    await update_status_checking_pay(user_id, basket_id, secret_id, 'Успешно', True)
 
 
 @router.callback_query(F.data.startswith("reject_"))
 async def reject_payment(callback: CallbackQuery, bot: Bot):
     user_id = int(callback.data.split("_")[1])
-
+    data_basket = await get_basket_all_bot_message(user_id)
+    secret_id = data_basket['secret_id']
+    basket_id = data_basket['basket_id']
     # Новый markup с результатом
     new_markup = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="❌ Отклонено", callback_data="noop")]
@@ -50,6 +56,8 @@ async def reject_payment(callback: CallbackQuery, bot: Bot):
     )
 
     await callback.answer("Оплата отклонена ❌", show_alert=False)
+    
+    await update_status_checking_pay(user_id, basket_id, secret_id, 'Ошибка', True)
 
 
 @router.callback_query(F.data == "noop")

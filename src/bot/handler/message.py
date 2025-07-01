@@ -67,5 +67,3 @@ async def message_group_proof(user_id: int, filename: str, content: bytes, date)
         await bot.send_document(chat_id=GROUP_CHAT_ID, document=input_file, caption=caption, reply_markup=keyboard)
     else:
         await bot.send_message(chat_id=GROUP_CHAT_ID, text=f"⚠️ Неподдерживаемый тип файла от {user_id}: {filename}")
-        
-    await status_basket_user_expectation(user_id)

@@ -1,9 +1,10 @@
 import base64
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel
 from db.models.user import get_user_name_photo, get_user_name_tgname
+from db.models.pay import get_basket_all_start_message
 from log.log import setup_logger
 from auth.telegram_auth import get_verified_user
 
@@ -35,10 +36,17 @@ async def get_user_info(request: UserRequest, user_data: dict = Depends(get_veri
         name = user_data['name']
         photo = user_data['photo']
         photo = base64.b64encode(photo).decode('utf-8') if photo else None
-
+        data_basket = await get_basket_all_start_message(user_id)
+        redirect_url = None
+        if data_basket is not None:
+            basket_id = data_basket['basket_id']
+            type_pay = data_basket['type_payments']
+            secret_id = data_basket['secret_id']
+            redirect_url = f"/checking_payment?user_id={user_id}&basket_id={basket_id}&type_pay={type_pay}&secret_id={secret_id}"
         return {
             "name": name,
-            "avatar_base64": photo
+            "avatar_base64": photo,
+            "redirect_url": redirect_url
         }
     else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Invalid initData")
